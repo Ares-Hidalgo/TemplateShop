@@ -1,8 +1,8 @@
 {
-    "name": "inventory",
+    "name": "TemplateShop",
     "version": "1.0.0",
     "scripts": {
-        "dev": "concurrently \"cd mi-backend && nodemon server.js\" \"cd mi-frontend && npm run dev\""
+        "dev": "npm run dev"
     },
     "dependencies": {
         "autoprefixer": "^10.4.20",
@@ -10,8 +10,5 @@
         "react-icons": "^5.3.0",
         "tailwindcss": "^3.4.14"
     },
-    "type": "module",
-    "devDependencies": {
-        "concurrently": "^9.1.0"
-    }
+    "type": "module"
 }

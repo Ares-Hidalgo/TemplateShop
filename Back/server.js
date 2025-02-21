@@ -12,12 +12,7 @@ app.use(express.json());
 
 // Ruta para obtener los datos de la tabla Productos
 app.get('/productos', (req, res) => {
-    const query = `
-        SELECT Productos.producto_id AS id, Productos.nombre, Productos.descripcion, Productos.precio, Productos.stock, Proveedores.nombre AS proveedor, Productos.fecha_ingreso, Categorias.nombre AS categoria
-        FROM Productos
-        JOIN Categorias ON Productos.categoria_id = Categorias.categoria_id
-        JOIN Proveedores ON Productos.proveedor_id = Proveedores.proveedor_id
-    `;
+    const query = `Query`;
     connection.query(query, (err, results) => {
         if (err) {
             console.error('Error al obtener los productos:', err);
@@ -31,7 +26,7 @@ app.get('/productos', (req, res) => {
 // Ruta para agregar un nuevo producto
 app.post('/productos', (req, res) => {
     const { id, nombre, descripcion, categoria, precio, stock, proveedor, fecha_ingreso } = req.body;
-    const query = 'INSERT INTO Productos (producto_id, nombre, descripcion, categoria_id, precio, stock, proveedor_id, fecha_ingreso) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+    const query = `Query`;
     connection.query(query, [id, nombre, descripcion, categoria, precio, stock, proveedor, fecha_ingreso], (err, results) => {
         if (err) {
             console.error('Error al agregar el producto:', err);
@@ -46,7 +41,7 @@ app.post('/productos', (req, res) => {
 app.put('/productos/:id', (req, res) => {
     const { id } = req.params;
     const { nombre, descripcion, precio, stock, fecha_ingreso } = req.body;
-    const query = 'UPDATE Productos SET nombre = ?, descripcion = ?, precio = ?, stock = ?, fecha_ingreso = ? WHERE producto_id = ?';
+    const query = `Query`;
     connection.query(query, [nombre, descripcion, precio, stock, fecha_ingreso, id], (err, results) => {
         if (err) {
             console.error('Error al actualizar el producto:', err);
@@ -79,8 +74,9 @@ app.delete('/productos/:id', (req, res) => {
         }
     });
 });
+//Este lo usaba para categorizar losproductos
 app.get('/categorias', (req, res) => {
-    const query = 'SELECT categoria_id AS id, nombre FROM Categorias';
+    const query = `Query`;
     connection.query(query, (err, results) => {
         if (err) {
             console.error('Error al obtener las categorías:', err);
@@ -92,7 +88,7 @@ app.get('/categorias', (req, res) => {
 });
 
 app.get('/proveedores', (req, res) => {
-    const query = 'SELECT proveedor_id AS id, nombre FROM Proveedores';
+    const query = `Query`;
     connection.query(query, (err, results) => {
         if (err) {
             console.error('Error al obtener los proveedores:', err);
@@ -152,12 +148,7 @@ app.post('/ventas', (req, res) => {
 // Ruta para calcular el total de una venta
 app.get('/ventas/:id/total', (req, res) => {
     const { id } = req.params;
-    const query = `
-        SELECT SUM(p.precio * dv.cantidad) AS total
-        FROM DetallesVenta dv
-        JOIN Productos p ON dv.producto_id = p.producto_id
-        WHERE dv.venta_id = ?
-    `;
+    const query = `Query`;
     connection.query(query, [id], (err, results) => {
         if (err) {
             console.error('Error al calcular el total de la venta:', err);
@@ -173,14 +164,7 @@ app.get('/ventas/:id/total', (req, res) => {
 // Ruta para buscar ventas
 app.get('/ventas', (req, res) => {
     const { fecha, cliente, producto } = req.query;
-    let query = `
-        SELECT v.venta_id, v.fecha, c.nombre AS cliente, SUM(p.precio * dv.cantidad) AS total
-        FROM Ventas v
-        JOIN Clientes c ON v.cliente_id = c.cliente_id
-        JOIN DetallesVenta dv ON v.venta_id = dv.venta_id
-        JOIN Productos p ON dv.producto_id = p.producto_id
-        WHERE 1=1
-    `;
+    const query = `Query`;
     const params = [];
     if (fecha) {
         query += ' AND DATE(v.fecha) = ?';
@@ -207,7 +191,7 @@ app.get('/ventas', (req, res) => {
 });
 
 app.get('/clientes', (req, res) => {
-    const query = 'SELECT cliente_id AS id, nombre, contacto, direccion, telefono, correo FROM Clientes';
+    const query = `Query`;
     connection.query(query, (err, results) => {
         if (err) {
             console.error('Error al obtener los clientes:', err);
@@ -231,6 +215,7 @@ app.post('/clientes', (req, res) => {
     });
 });
 
+//Para actualizar los clientes
 app.put('/clientes/:id', (req, res) => {
     const { id } = req.params;
     const { nombre, contacto, direccion, telefono, correo } = req.body;
@@ -245,6 +230,7 @@ app.put('/clientes/:id', (req, res) => {
     });
 });
 
+//Borra un cliente
 app.delete('/clientes/:id', (req, res) => {
     const { id } = req.params;
     const query = 'DELETE FROM Clientes WHERE cliente_id = ?';
@@ -258,6 +244,7 @@ app.delete('/clientes/:id', (req, res) => {
     });
 });
 
+//BUsca un cliente
 app.get('/clientes/:id', (req, res) => {
     const { id } = req.params;
     const query = 'SELECT cliente_id AS id, nombre, contacto, direccion, telefono, correo FROM Clientes WHERE cliente_id = ?';
@@ -273,14 +260,7 @@ app.get('/clientes/:id', (req, res) => {
 
 app.get('/clientes/:id/compras', (req, res) => {
     const { id } = req.params;
-    const query = `
-        SELECT v.venta_id, v.fecha, SUM(p.precio * dv.cantidad) AS total
-        FROM Ventas v
-        JOIN DetallesVenta dv ON v.venta_id = dv.venta_id
-        JOIN Productos p ON dv.producto_id = p.producto_id
-        WHERE v.cliente_id = ?
-        GROUP BY v.venta_id
-    `;
+    const query = `Query`;
     connection.query(query, [id], (err, results) => {
         if (err) {
             console.error('Error al obtener el historial de compras:', err);
@@ -291,33 +271,10 @@ app.get('/clientes/:id/compras', (req, res) => {
     });
 });
 
-// Ruta para obtener los productos de una venta específica
-app.get('/ventas/:id/productos', (req, res) => {
-    const { id } = req.params;
-    const query = `
-        SELECT p.nombre, dv.cantidad, p.precio AS costo
-        FROM DetallesVenta dv
-        JOIN Productos p ON dv.producto_id = p.producto_id
-        WHERE dv.venta_id = ?
-    `;
-    connection.query(query, [id], (err, results) => {
-        if (err) {
-            console.error('Error al obtener los productos de la venta:', err);
-            res.status(500).json({ error: 'Error al obtener los productos de la venta' });
-        } else {
-            res.json(results);
-        }
-    });
-});
 
 // Ruta para obtener los productos comprados en el inventario
 app.get('/inventario', (req, res) => {
-    const query = `
-        SELECT p.producto_id AS id, p.nombre, SUM(dv.cantidad) AS cantidad_comprada
-        FROM Productos p
-        JOIN DetallesVenta dv ON p.producto_id = dv.producto_id
-        GROUP BY p.producto_id
-    `;
+    const query = `Query`;
     connection.query(query, (err, results) => {
         if (err) {
             console.error('Error al obtener el inventario:', err);
@@ -327,7 +284,7 @@ app.get('/inventario', (req, res) => {
         }
     });
 });
-
+//Confirma que si esta conectado con el server.
 app.listen(port, () => {
-    console.log(`Servidor escuchando en http://localhost:${port}`);
+    //console.log(`Servidor escuchando en http://localhost:${port}`);
 });

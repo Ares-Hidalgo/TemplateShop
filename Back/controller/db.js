@@ -4,7 +4,7 @@ const connection = mysql2.createConnection({
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'db_Inv'
+    database: 'Como se llame la DB'
 });
 
 export default connection;
